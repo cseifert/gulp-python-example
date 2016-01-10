@@ -12,12 +12,7 @@ var config = {
 /**
  * Creates missing directories
  */
-gulp.task('prepare', shell.task(
-	[
-		'mkdir -p ' + config.reportDir,
-		'mkdir -p ' + config.docDir
-	]
-));
+gulp.task('prepare', shell.task(['mkdir -p ' + config.reportDir]));
 
 /**
  * Runs pylint on all python files within the project directory
@@ -174,7 +169,7 @@ gulp.task('report', function(callback){
  * Documentation task to bundle single documentation tasks
  */
 gulp.task('documentate', function(callback){
-	runSequence('prepare', 'sphinx', 'pyreverse', callback)
+	runSequence('sphinx', 'pyreverse', callback)
 });
 
 /**
