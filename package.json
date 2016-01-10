@@ -1,0 +1,16 @@
+{
+  "name": "gulp-python-example",
+  "version": "1.0.0",
+  "description": "A Gulp example for Python development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christian Seifert",
+  "license": "BSD-2-Clause",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp-shell": "^0.5.1",
+    "run-sequence": "^1.1.5"
+  }
+}
