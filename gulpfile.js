@@ -1,12 +1,12 @@
 var gulp = require('gulp'),
-	shell = require('gulp-shell'),
-	runSequence = require('run-sequence');
+    shell = require('gulp-shell'),
+    runSequence = require('run-sequence');
 
 var config = {
-	sourceDir: 'project/',
-	reportDir: 'reports/',
-	docDir: 'docs/',
-	testDir: 'test/'
+    sourceDir: 'project/',
+    reportDir: 'reports/',
+    docDir: 'docs/',
+    testDir: 'test/'
 };
 
 /**
@@ -26,9 +26,9 @@ gulp.task('pylint', function() {
         })
         .on('data', function() {
             shell.task(
-				['pylint ' + files.join(' ') + ' -f html > ' + config.reportDir + 'pylint_report.html'],
-				{quiet: true, ignoreErrors: true}
-			)();
+                ['pylint ' + files.join(' ') + ' -f html > ' + config.reportDir + 'pylint_report.html'],
+                {quiet: true, ignoreErrors: true}
+            )();
         });
 });
 
@@ -51,9 +51,9 @@ gulp.task('autopep8', function() {
  * Runs the clonedigger command to find duplicate code
  */
 gulp.task('clonedigger', shell.task(
-	['clonedigger ' + config.sourceDir + ' --ignore-dir=' + config.testDir +
-	' --output ' + config.reportDir + 'clonedigger.html'
-	]
+    ['clonedigger ' + config.sourceDir + ' --ignore-dir=' + config.testDir +
+    ' --output ' + config.reportDir + 'clonedigger.html'
+    ]
 ));
 
 /**
@@ -68,12 +68,12 @@ gulp.task('pycallgraph', function() {
         })
         .on('data', function() {
             shell.task([
-					'cd ' + config.sourceDir +
-					' && pycallgraph graphviz --output-file ' + __dirname + '/' + config.reportDir + 'pycallgraph.png' +
-					' -- ' + files.join(' ')
-				],
-				{quiet: true}
-			)();
+                    'cd ' + config.sourceDir +
+                    ' && pycallgraph graphviz --output-file ' + __dirname + '/' + config.reportDir + 'pycallgraph.png' +
+                    ' -- ' + files.join(' ')
+                ],
+                {quiet: true}
+            )();
         });
 });
 
@@ -89,14 +89,14 @@ gulp.task('coverage', function() {
         })
         .on('data', function() {
             shell.task([
-				'cd ' + config.sourceDir +
-				' && coverage run ' + files.join(' ') +
-				' && coverage html',
-				'mv ' + config.sourceDir + 'htmlcov ' + __dirname + '/' + config.reportDir + 'htmlcov',
-				'rm ' + config.sourceDir + '.coverage'
-			],
-			{quiet: true, ignoreErrors: true}
-			)();
+                'cd ' + config.sourceDir +
+                ' && coverage run ' + files.join(' ') +
+                ' && coverage html',
+                'mv ' + config.sourceDir + 'htmlcov ' + __dirname + '/' + config.reportDir + 'htmlcov',
+                'rm ' + config.sourceDir + '.coverage'
+            ],
+            {quiet: true, ignoreErrors: true}
+            )();
         });
 });
 
@@ -108,25 +108,25 @@ gulp.task('pyreverse', function() {
 
     gulp.src([config.sourceDir + '**/*.py', '!/**/__init__.py', '!' + config.sourceDir + config.testDir + '*'])
         .on('data', function(file) {
-			reduced_file = file.path.replace(__dirname + '/' + config.sourceDir, '');
+            reduced_file = file.path.replace(__dirname + '/' + config.sourceDir, '');
 
-			if (reduced_file.indexOf('/') === -1) {
-				directories.push(reduced_file);
-			} else {
-				folder = reduced_file.replace(/[^\/]*$\//, '')
+            if (reduced_file.indexOf('/') === -1) {
+                directories.push(reduced_file);
+            } else {
+                folder = reduced_file.replace(/[^\/]*$\//, '')
 
-				if (directories.indexOf(folder) === -1) {
-					directories.push(folder);
-				}
-			}
+                if (directories.indexOf(folder) === -1) {
+                    directories.push(folder);
+                }
+            }
         })
         .on('data', function() {
             shell.task([
-				'cd ' + config.sourceDir + ' && pyreverse -o png -p Uml ' + directories.join(' '),
-				'mv ' + config.sourceDir + '*.png ' + config.docDir
-				],
-				{quiet: true, ignoreErrors: true}
-			)();
+                'cd ' + config.sourceDir + ' && pyreverse -o png -p Uml ' + directories.join(' '),
+                'mv ' + config.sourceDir + '*.png ' + config.docDir
+                ],
+                {quiet: true, ignoreErrors: true}
+            )();
         });
 });
 
@@ -134,47 +134,47 @@ gulp.task('pyreverse', function() {
  * Runs the sphinx command to create an automated API documentation
  */
 gulp.task('sphinx', shell.task(
-	[
-		'sphinx-apidoc ' + config.sourceDir + ' -o ' + config.docDir + 'sphinx/source --force',
-		'cd ' + config.docDir + 'sphinx && make clean && make html'
-	]
+    [
+        'sphinx-apidoc ' + config.sourceDir + ' -o ' + config.docDir + 'sphinx/source --force',
+        'cd ' + config.docDir + 'sphinx && make clean && make html'
+    ]
 ));
 
 /**
  * Runs the vulture command to find unused code without executing the module
  */
 gulp.task('vulture', shell.task(
-	[
-		'vulture ' + config.sourceDir + ' --exclude=' + config.sourceDir + config.testDir +
-		' | tee ' + config.reportDir + 'vulture.txt'
-	],
-	{ignoreErrors: true}
+    [
+        'vulture ' + config.sourceDir + ' --exclude=' + config.sourceDir + config.testDir +
+        ' | tee ' + config.reportDir + 'vulture.txt'
+    ],
+    {ignoreErrors: true}
 ));
 
 /**
  * Runs nosetests to run unit tests
  */
 gulp.task('test', shell.task(
-	['nosetests ' + config.sourceDir + ' -v 2>&1 | tee ' + config.reportDir + 'unittests.txt']
+    ['nosetests ' + config.sourceDir + ' -v 2>&1 | tee ' + config.reportDir + 'unittests.txt']
 ));
 
 /**
  * Report task to bundle single reporting tasks
  */
 gulp.task('report', function(callback){
-	runSequence('prepare', 'pylint', 'clonedigger', 'pycallgraph', 'coverage', 'vulture', 'test', callback)
+    runSequence('prepare', 'pylint', 'clonedigger', 'pycallgraph', 'coverage', 'vulture', 'test', callback)
 });
 
 /**
  * Documentation task to bundle single documentation tasks
  */
 gulp.task('documentate', function(callback){
-	runSequence('sphinx', 'pyreverse', callback)
+    runSequence('sphinx', 'pyreverse', callback)
 });
 
 /**
  * Default gulp task to run reports and documentation
  */
 gulp.task('default', function(callback){
-	runSequence('documentate', 'report', callback)
+    runSequence('documentate', 'report', callback)
 });
